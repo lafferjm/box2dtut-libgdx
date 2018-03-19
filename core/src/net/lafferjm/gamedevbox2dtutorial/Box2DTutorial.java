@@ -15,6 +15,8 @@ public class Box2DTutorial extends Game {
     private MainScreen mainScreen;
     private EndScreen endScreen;
 
+    private AppPreferences preferences;
+
     public final static int MENU = 0;
     public final static int PREFERENCES = 1;
     public final static int APPLICATION = 2;
@@ -22,6 +24,7 @@ public class Box2DTutorial extends Game {
 
     @Override
     public void create() {
+        preferences = new AppPreferences();
         loadingScreen = new LoadingScreen(this);
         setScreen(loadingScreen);
     }
@@ -63,5 +66,9 @@ public class Box2DTutorial extends Game {
                 this.setScreen(endScreen);
                 break;
         }
+    }
+
+    public AppPreferences getPreferences() {
+        return this.preferences;
     }
 }

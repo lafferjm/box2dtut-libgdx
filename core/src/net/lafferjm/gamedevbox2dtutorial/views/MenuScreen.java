@@ -25,11 +25,12 @@ public class MenuScreen implements Screen {
     public MenuScreen(Box2DTutorial box2DTutorial) {
         parent = box2DTutorial;
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(stage);
+
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         TextButton newGame = new TextButton("New Game", skin);
         TextButton preferences = new TextButton("Preferences", skin);
@@ -37,7 +38,7 @@ public class MenuScreen implements Screen {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true);
+        // table.setDebug(true);
 
         table.add(newGame).fillX().uniformX();
         table.row().pad(10, 0, 10, 0);
