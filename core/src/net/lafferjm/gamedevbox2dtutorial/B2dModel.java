@@ -16,23 +16,31 @@ public class B2dModel {
     private Body bodyd;
     private Body bodys;
     private Body bodyk;
+    private Body player;
+
+    public boolean isSwimming = false;
 
     public B2dModel() {
         world = new World(new Vector2(0, -10f), true);
+        world.setContactListener(new B2dContactListener(this));
+
         createFloor();
-        createObject();
-        createMovingObject();
+        // createObject();
+        // createMovingObject();
 
         BodyFactory bodyFactory = BodyFactory.getInstance(world);
 
-        bodyFactory.makeCirclePolyBody(1, 1, 2, BodyFactory.RUBBER);
-        bodyFactory.makeCirclePolyBody(4, 1, 2, BodyFactory.STEEL);
-        bodyFactory.makeCirclePolyBody(-4, 1, 2, BodyFactory.STONE);
+        player = bodyFactory.makeBoxPolyBody(1, 1, 2, 2, BodyFactory.RUBBER, BodyDef.BodyType.DynamicBody, false);
+        Body water = bodyFactory.makeBoxPolyBody(1, -8, 40, 4, BodyFactory.RUBBER, BodyDef.BodyType.StaticBody, false);
+        water.setUserData("IAMTHESEA");
 
-        bodyFactory.makeBoxPolyBody(1, 5, 6, 6, BodyFactory.RUBBER, BodyDef.BodyType.DynamicBody);
+        bodyFactory.makeAllFixturesSensors(water);
     }
 
     public void logicStep(float delta) {
+        if (isSwimming) {
+            player.applyForceToCenter(0, 50, true);
+        }
         world.step(delta, 3, 3);
     }
 
