@@ -22,6 +22,14 @@ public class B2dModel {
         createFloor();
         createObject();
         createMovingObject();
+
+        BodyFactory bodyFactory = BodyFactory.getInstance(world);
+
+        bodyFactory.makeCirclePolyBody(1, 1, 2, BodyFactory.RUBBER);
+        bodyFactory.makeCirclePolyBody(4, 1, 2, BodyFactory.STEEL);
+        bodyFactory.makeCirclePolyBody(-4, 1, 2, BodyFactory.STONE);
+
+        bodyFactory.makeBoxPolyBody(1, 5, 6, 6, BodyFactory.RUBBER, BodyDef.BodyType.DynamicBody);
     }
 
     public void logicStep(float delta) {
