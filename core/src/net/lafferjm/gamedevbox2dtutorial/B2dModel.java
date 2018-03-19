@@ -7,6 +7,8 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import net.lafferjm.gamedevbox2dtutorial.controller.KeyboardController;
+
 /**
  * Created by laffe on 3/19/2018.
  */
@@ -17,10 +19,12 @@ public class B2dModel {
     private Body bodys;
     private Body bodyk;
     private Body player;
+    private KeyboardController controller;
 
     public boolean isSwimming = false;
 
-    public B2dModel() {
+    public B2dModel(KeyboardController controller) {
+        this.controller = controller;
         world = new World(new Vector2(0, -10f), true);
         world.setContactListener(new B2dContactListener(this));
 
@@ -38,8 +42,18 @@ public class B2dModel {
     }
 
     public void logicStep(float delta) {
+        if(controller.left) {
+            player.applyForceToCenter(-10, 0, true);
+        } else if (controller.right) {
+            player.applyForceToCenter(10, 0, true);
+        } else if (controller.up) {
+            player.applyForceToCenter(0, 10, true);
+        } else if (controller.down) {
+            player.applyForceToCenter(0, -10, true);
+        }
+
         if (isSwimming) {
-            player.applyForceToCenter(0, 50, true);
+            player.applyForceToCenter(0, 40, true);
         }
         world.step(delta, 3, 3);
     }
