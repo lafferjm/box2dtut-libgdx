@@ -1,6 +1,8 @@
 package net.lafferjm.gamedevbox2dtutorial;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -20,10 +22,12 @@ public class B2dModel {
     private Body bodyk;
     private Body player;
     private KeyboardController controller;
+    private OrthographicCamera camera;
 
     public boolean isSwimming = false;
 
-    public B2dModel(KeyboardController controller) {
+    public B2dModel(KeyboardController controller, OrthographicCamera camera) {
+        this.camera = camera;
         this.controller = controller;
         world = new World(new Vector2(0, -10f), true);
         world.setContactListener(new B2dContactListener(this));
@@ -42,6 +46,10 @@ public class B2dModel {
     }
 
     public void logicStep(float delta) {
+        if (controller.isMouse1Down && pointIntersecsBody(player, controller.mouseLocation)) {
+            System.out.println("Player was clicked");
+        }
+
         if(controller.left) {
             player.applyForceToCenter(-10, 0, true);
         } else if (controller.right) {
@@ -111,5 +119,16 @@ public class B2dModel {
         shape.dispose();
 
         bodyk.setLinearVelocity(0, 0.75f);
+    }
+
+    public boolean pointIntersecsBody(Body body, Vector2 mouseLocation) {
+        Vector3 mousePos = new Vector3(mouseLocation, 0);
+
+        camera.unproject(mousePos);
+        if (body.getFixtureList().first().testPoint(mousePos.x, mousePos.y)) {
+            return true;
+        }
+
+        return false;
     }
 }

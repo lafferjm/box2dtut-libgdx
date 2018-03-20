@@ -24,8 +24,8 @@ public class MainScreen implements Screen {
     public MainScreen(Box2DTutorial box2DTutorial) {
         parent = box2DTutorial;
         controller = new KeyboardController();
-        model = new B2dModel(controller);
         cam = new OrthographicCamera(32, 24);
+        model = new B2dModel(controller, cam);
         debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
     }
 
