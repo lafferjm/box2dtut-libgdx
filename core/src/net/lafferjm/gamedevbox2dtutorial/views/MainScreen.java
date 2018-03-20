@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 import net.lafferjm.gamedevbox2dtutorial.B2dModel;
@@ -22,8 +24,9 @@ public class MainScreen implements Screen {
     private OrthographicCamera cam;
     private Box2DDebugRenderer debugRenderer;
     private KeyboardController controller;
-    private final Texture playerTex;
+    private final AtlasRegion playerTex;
     private SpriteBatch spriteBatch;
+    private TextureAtlas atlas;
 
     public MainScreen(Box2DTutorial box2DTutorial) {
         parent = box2DTutorial;
@@ -31,12 +34,12 @@ public class MainScreen implements Screen {
         cam = new OrthographicCamera(32, 24);
         model = new B2dModel(controller, cam, parent.assetManager);
         debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
-        
-        parent.assetManager.queueAddImages();
-        parent.assetManager.manager.finishLoading();
-        playerTex = parent.assetManager.manager.get("images/player.png");
 
         spriteBatch = new SpriteBatch();
+        spriteBatch.setProjectionMatrix(cam.combined);
+
+        atlas = parent.assetManager.manager.get("images/game.atlas");
+        playerTex = atlas.findRegion("player");
     }
 
     @Override
@@ -52,7 +55,6 @@ public class MainScreen implements Screen {
         debugRenderer.render(model.world, cam.combined);
 
         spriteBatch.begin();
-        spriteBatch.setProjectionMatrix(cam.combined);
         spriteBatch.draw(playerTex, model.player.getPosition().x - 1, model.player.getPosition().y - 1,2 , 2);
         spriteBatch.end();
     }
