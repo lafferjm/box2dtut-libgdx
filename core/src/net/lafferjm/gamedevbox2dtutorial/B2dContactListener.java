@@ -70,5 +70,6 @@ public class B2dContactListener implements ContactListener {
     private void shootUpInAir(Fixture staticFixture, Fixture otherFixture) {
         System.out.println("Adding Force");
         otherFixture.getBody().applyForceToCenter(new Vector2(-100000, -100000), true);
+        parent.playSound(B2dModel.BOING_SOUND);
     }
 }

@@ -21,6 +21,7 @@ import net.lafferjm.gamedevbox2dtutorial.Box2DTutorial;
 public class MenuScreen implements Screen {
     private Box2DTutorial parent;
     private final Stage stage;
+    private Skin skin;
 
     public MenuScreen(Box2DTutorial box2DTutorial) {
         parent = box2DTutorial;
@@ -31,7 +32,9 @@ public class MenuScreen implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
 
-        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        parent.assetManager.queueAddSkin();
+        parent.assetManager.manager.finishLoading();
+        skin = parent.assetManager.manager.get("skin/glassy-ui.json");
         TextButton newGame = new TextButton("New Game", skin);
         TextButton preferences = new TextButton("Preferences", skin);
         TextButton exit = new TextButton("Exit", skin);

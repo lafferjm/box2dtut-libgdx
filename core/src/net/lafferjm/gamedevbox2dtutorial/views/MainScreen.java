@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 import net.lafferjm.gamedevbox2dtutorial.B2dModel;
@@ -20,13 +22,21 @@ public class MainScreen implements Screen {
     private OrthographicCamera cam;
     private Box2DDebugRenderer debugRenderer;
     private KeyboardController controller;
+    private final Texture playerTex;
+    private SpriteBatch spriteBatch;
 
     public MainScreen(Box2DTutorial box2DTutorial) {
         parent = box2DTutorial;
         controller = new KeyboardController();
         cam = new OrthographicCamera(32, 24);
-        model = new B2dModel(controller, cam);
+        model = new B2dModel(controller, cam, parent.assetManager);
         debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
+        
+        parent.assetManager.queueAddImages();
+        parent.assetManager.manager.finishLoading();
+        playerTex = parent.assetManager.manager.get("images/player.png");
+
+        spriteBatch = new SpriteBatch();
     }
 
     @Override
@@ -40,6 +50,11 @@ public class MainScreen implements Screen {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         debugRenderer.render(model.world, cam.combined);
+
+        spriteBatch.begin();
+        spriteBatch.setProjectionMatrix(cam.combined);
+        spriteBatch.draw(playerTex, model.player.getPosition().x - 1, model.player.getPosition().y - 1,2 , 2);
+        spriteBatch.end();
     }
 
     @Override
@@ -64,6 +79,6 @@ public class MainScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        spriteBatch.dispose();
     }
 }

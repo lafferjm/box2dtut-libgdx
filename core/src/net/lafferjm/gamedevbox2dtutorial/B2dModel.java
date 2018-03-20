@@ -1,5 +1,6 @@
 package net.lafferjm.gamedevbox2dtutorial;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import net.lafferjm.gamedevbox2dtutorial.controller.KeyboardController;
+import net.lafferjm.gamedevbox2dtutorial.loader.B2dAssetManager;
 
 /**
  * Created by laffe on 3/19/2018.
@@ -20,13 +22,20 @@ public class B2dModel {
     private Body bodyd;
     private Body bodys;
     private Body bodyk;
-    private Body player;
+    public Body player;
     private KeyboardController controller;
     private OrthographicCamera camera;
+    private B2dAssetManager assetManager;
+    private Sound ping;
+    private Sound boing;
+
+    public static final int BOING_SOUND = 0;
+    public static final int PING_SOUND = 1;
 
     public boolean isSwimming = false;
 
-    public B2dModel(KeyboardController controller, OrthographicCamera camera) {
+    public B2dModel(KeyboardController controller, OrthographicCamera camera, B2dAssetManager assetManager) {
+        this.assetManager = assetManager;
         this.camera = camera;
         this.controller = controller;
         world = new World(new Vector2(0, -10f), true);
@@ -36,10 +45,16 @@ public class B2dModel {
         // createObject();
         // createMovingObject();
 
+        assetManager.queueAddSounds();
+        assetManager.manager.finishLoading();
+
+        ping = assetManager.manager.get("sounds/ping.wav", Sound.class);
+        boing = assetManager.manager.get("sounds/boing.wav", Sound.class);
+
         BodyFactory bodyFactory = BodyFactory.getInstance(world);
 
         player = bodyFactory.makeBoxPolyBody(1, 1, 2, 2, BodyFactory.RUBBER, BodyDef.BodyType.DynamicBody, false);
-        Body water = bodyFactory.makeBoxPolyBody(1, -8, 40, 4, BodyFactory.RUBBER, BodyDef.BodyType.StaticBody, false);
+        Body water = bodyFactory.makeBoxPolyBody(1, -8, 40, 16, BodyFactory.RUBBER, BodyDef.BodyType.StaticBody, false);
         water.setUserData("IAMTHESEA");
 
         bodyFactory.makeAllFixturesSensors(water);
@@ -130,5 +145,16 @@ public class B2dModel {
         }
 
         return false;
+    }
+
+    public void playSound(int sound) {
+        switch(sound) {
+            case BOING_SOUND:
+                boing.play();
+                break;
+            case PING_SOUND:
+                ping.play();
+                break;
+        }
     }
 }
