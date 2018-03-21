@@ -3,6 +3,8 @@ package net.lafferjm.gamedevbox2dtutorial.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.lafferjm.gamedevbox2dtutorial.Box2DTutorial;
@@ -22,6 +25,8 @@ public class MenuScreen implements Screen {
     private Box2DTutorial parent;
     private final Stage stage;
     private Skin skin;
+    private TextureAtlas atlas;
+    private AtlasRegion background;
 
     public MenuScreen(Box2DTutorial box2DTutorial) {
         parent = box2DTutorial;
@@ -35,6 +40,8 @@ public class MenuScreen implements Screen {
         parent.assetManager.queueAddSkin();
         parent.assetManager.manager.finishLoading();
         skin = parent.assetManager.manager.get("skin/glassy-ui.json");
+        atlas = parent.assetManager.manager.get("images/loading.atlas");
+        background = atlas.findRegion("flamebackground");
         TextButton newGame = new TextButton("New Game", skin);
         TextButton preferences = new TextButton("Preferences", skin);
         TextButton exit = new TextButton("Exit", skin);
@@ -42,6 +49,7 @@ public class MenuScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         // table.setDebug(true);
+        table.setBackground(new TiledDrawable(background));
 
         table.add(newGame).fillX().uniformX();
         table.row().pad(10, 0, 10, 0);
