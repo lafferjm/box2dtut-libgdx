@@ -15,37 +15,28 @@ import net.lafferjm.gamedevbox2dtutorial.entity.components.TransformComponent;
 
 import java.util.Comparator;
 
-/**
- * Created by laffe on 3/20/2018.
- */
-
 public class RenderingSystem extends SortedIteratingSystem {
-    // sets the amount of pixels each metre of box2d objects contains
-    static final float PPM = 32.0f;
 
-    // this gets the height and width of our camera frustrum based off the
-    // width and height of the screen and our pixel per meter ratio
-    static final float FRUSTRUM_WIDTH = Gdx.graphics.getWidth() / PPM;
-    static final float FRUSTRUM_HEIGHT = Gdx.graphics.getHeight() / PPM;
+    public static final float PPM = 16.0f;
+    static final float FRUSTUM_WIDTH = Gdx.graphics.getWidth()/PPM;//37.5f;
+    static final float FRUSTUM_HEIGHT = Gdx.graphics.getHeight()/PPM;//.0f;
 
-    // get the ration for converting our pixels to metres
     public static final float PIXELS_TO_METRES = 1.0f / PPM;
 
-    // static method to get screen width in metres
     private static Vector2 meterDimensions = new Vector2();
     private static Vector2 pixelDimensions = new Vector2();
-    public static Vector2 getScreenSizeInMeters() {
-        meterDimensions.set(Gdx.graphics.getWidth() * PIXELS_TO_METRES,
-                Gdx.graphics.getHeight() * PIXELS_TO_METRES);
+    public static Vector2 getScreenSizeInMeters(){
+        meterDimensions.set(Gdx.graphics.getWidth()*PIXELS_TO_METRES,
+                Gdx.graphics.getHeight()*PIXELS_TO_METRES);
         return meterDimensions;
     }
 
-    public static Vector2 getScreenSizeInPixels() {
+    public static Vector2 getScreenSizeInPixesl(){
         pixelDimensions.set(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         return pixelDimensions;
     }
 
-    public static float PixelsToMeters(float pixelValue) {
+    public static float PixelsToMeters(float pixelValue){
         return pixelValue * PIXELS_TO_METRES;
     }
 
@@ -61,27 +52,25 @@ public class RenderingSystem extends SortedIteratingSystem {
     public RenderingSystem(SpriteBatch batch) {
         super(Family.all(TransformComponent.class, TextureComponent.class).get(), new ZComparator());
 
-        // creates our component mappers
         textureM = ComponentMapper.getFor(TextureComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
 
-        // create the array for sorting entities
         renderQueue = new Array<Entity>();
 
         this.batch = batch;
 
-        cam = new OrthographicCamera(FRUSTRUM_WIDTH, FRUSTRUM_HEIGHT);
-        cam.position.set(FRUSTRUM_WIDTH / 2f, FRUSTRUM_HEIGHT / 2f, 0);
+        comparator = new ZComparator();
+
+        cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
+        cam.position.set(FRUSTUM_WIDTH / 2f, FRUSTUM_HEIGHT / 2f, 0);
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        // sort the renderQueue based on z index
         renderQueue.sort(comparator);
 
-        // update the camera and sprite batch
         cam.update();
         batch.setProjectionMatrix(cam.combined);
         batch.enableBlending();
@@ -95,11 +84,12 @@ public class RenderingSystem extends SortedIteratingSystem {
                 continue;
             }
 
+
             float width = tex.region.getRegionWidth();
             float height = tex.region.getRegionHeight();
 
-            float originX = width / 2f;
-            float originY = height / 2f;
+            float originX = width/2f;
+            float originY = height/2f;
 
             batch.draw(tex.region,
                     t.position.x - originX, t.position.y - originY,
@@ -107,10 +97,10 @@ public class RenderingSystem extends SortedIteratingSystem {
                     width, height,
                     PixelsToMeters(t.scale.x), PixelsToMeters(t.scale.y),
                     t.rotation);
-
-            batch.end();
-            renderQueue.clear();
         }
+
+        batch.end();
+        renderQueue.clear();
     }
 
     @Override

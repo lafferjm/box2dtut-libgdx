@@ -3,6 +3,7 @@ package net.lafferjm.gamedevbox2dtutorial.views;
 import com.badlogic.gdx.Screen;
 
 import net.lafferjm.gamedevbox2dtutorial.Box2DTutorial;
+import net.lafferjm.gamedevbox2dtutorial.DFUtils;
 
 /**
  * Created by laffe on 3/19/2018.
@@ -17,7 +18,8 @@ public class EndScreen implements Screen {
 
     @Override
     public void show() {
-
+        DFUtils.log("To the MENU");
+        parent.changeScreen(Box2DTutorial.MENU);
     }
 
     @Override

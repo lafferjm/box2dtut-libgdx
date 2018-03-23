@@ -35,6 +35,8 @@ public class PlayerControlSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         B2dBodyComponent b2body = bodm.get(entity);
         StateComponent state = sm.get(entity);
+        PlayerComponent player = pm.get(entity);
+        player.cam.position.y = b2body.body.getPosition().y;
 
         if (b2body.body.getLinearVelocity().y > 0) {
             state.set(StateComponent.STATE_FALLING);
@@ -47,6 +49,18 @@ public class PlayerControlSystem extends IteratingSystem {
             if(b2body.body.getLinearVelocity().x != 0) {
                 state.set(StateComponent.STATE_MOVING);
             }
+        }
+
+        if (b2body.body.getLinearVelocity().y < 0 && state.get() == StateComponent.STATE_FALLING) {
+            if (player.onPlatform) {
+                b2body.body.setLinearVelocity(b2body.body.getLinearVelocity().x, 0f);
+            }
+        }
+
+        if (player.onSpring) {
+            b2body.body.applyLinearImpulse(0, 175f, b2body.body.getWorldCenter().x, b2body.body.getWorldCenter().y, true);
+            state.set(StateComponent.STATE_JUMPING);
+            player.onSpring = false;
         }
 
         if (controller.left) {
